@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Zoho CRM - Analytics</title>
+    <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+    <script type="text/javascript" src="https://js.zohocdn.com/biginsdk/dist/js/bigin-widget-sdk.js"></script>
+    <style>
+        :root {
+            --primary-bg: #f5f7fa;
+            --secondary-bg: #c3cfe2;
+            --header-start: #2c3e50;
+            --header-end: #4a6491;
+            --white: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #4a6491;
+            --border-color: #eaecef;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --info-bg: #d1ecf1;
+            --info-text: #0c5460;
+            --error-bg: #f8d7da;
+            --error-text: #721c24;
+            --loading-bg: #fff3cd;
+            --loading-text: #856404;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { background: linear-gradient(90deg, var(--header-start) 0%, var(--header-end) 100%); color: var(--white); padding: 20px; border-radius: 10px 10px 0 0; text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        .description { font-size: 16px; opacity: 0.9; }
+        
+        /* Diseño: analytics arriba, información abajo */
+        .widget-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+        .analytics-section { 
+            background: var(--white); 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px var(--shadow-color); 
+            padding: 20px; 
+            order: 1; /* Coloca analytics primero (arriba) */
+        }
+        .details-section { 
+            background: var(--white); 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px var(--shadow-color); 
+            padding: 20px; 
+            order: 2; /* Coloca detalles después (abajo) */
+        }
+        
+        .section-title { font-size: 18px; color: var(--text-primary); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); }
+        .info-group { margin-bottom: 15px; }
+        .info-group label { display: block; font-weight: 600; font-size: 14px; color: var(--text-secondary); margin-bottom: 5px; }
+        .info-group .value { font-size: 16px; color: var(--text-primary); padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid var(--border-color); word-break: break-all; }
+        .controls { display: flex; justify-content: center; margin-top: 20px; gap: 10px; }
+        button { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .validate-btn { background: linear-gradient(90deg, var(--header-end) 0%, var(--header-start) 100%); color: var(--white); }
+        .validate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-color); }
+        .status { margin-top: 15px; padding: 12px; border-radius: 5px; text-align: center; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .success { background-color: var(--success-bg); color: var(--success-text); }
+        .info { background-color: var(--info-bg); color: var(--info-text); }
+        .error { background-color: var(--error-bg); color: var(--error-text); }
+        .loading { background-color: var(--loading-bg); color: var(--loading-text); }
+        .iframe-container { margin-top: 20px; border: 1px solid var(--border-color); border-radius: 5px; overflow: hidden; height: 600px; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.2); border-radius: 50%; border-top-color: var(--text-primary); animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .record-id-container { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%); 
+            padding: 15px; 
+            border-radius: 8px; 
+            border-left: 4px solid #4a6491;
+            margin-bottom: 20px;
+        }
+        .record-id-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a6491;
+            margin-bottom: 5px;
+        }
+        .record-id-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            word-break: break-all;
+        }
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .last-updated {
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard de Analytics - Accounts</h1>
+            <p class="description">Información del registro y métricas de rendimiento</p>
+        </header>
+        <div class="widget-container">
+            <div class="analytics-section">
+                <div class="analytics-header">
+                    <h2 class="section-title">Dashboard de Analytics</h2>
+                    <div class="last-updated" id="lastUpdated">Última actualización: --</div>
+                </div>
+                <div class="iframe-container">
+                    <iframe id="analyticsIframe" src="about:blank" frameborder="0"></iframe>
+                </div>
+            </div>
+            <div class="details-section">
+                <h2 class="section-title">Información del Registro</h2>
+                <div id="recordDetails">
+                    <div class="status info">Esperando información del registro desde Zoho...</div>
+                </div>
+                <div class="controls">
+                    <button class="validate-btn" id="reloadBtn" disabled>Recargar Analytics</button>
+                </div>
+                <div id="statusMsg" class="status loading"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const zohoWidget = {
+                state: { 
+                    recordId: null,
+                    currentModule: 'Accounts'
+                },
+                dom: {
+                    recordDetails: document.getElementById('recordDetails'),
+                    reloadBtn: document.getElementById('reloadBtn'),
+                    statusMsg: document.getElementById('statusMsg'),
+                    iframe: document.getElementById('analyticsIframe'),
+                    lastUpdated: document.getElementById('lastUpdated')
+                },
+
+                init() {
+                    this.addEventListeners();
+                    this.updateStatus('loading', 'Conectando con Zoho CRM...');
+                    ZOHO.embeddedApp.init()
+                        .then(() => {
+                            console.log("SDK de Zoho inicializado correctamente");
+                            
+                            ZOHO.embeddedApp.on("PageLoad", (data) => {
+                                console.log("Evento PageLoad recibido:", data);
+                                this.handlePageLoad(data);
+                            });
+                            
+                            this.getCurrentRecord();
+                        })
+                        .catch(error => {
+                            console.error("Error al inicializar el SDK de Zoho:", error);
+                            this.handleFailure("No se pudo conectar con Zoho CRM.");
+                        });
+                },
+                
+                async getCurrentRecord() {
+                    try {
+                        const context = await ZOHO.embeddedApp.getContext();
+                        console.log("Contexto de la aplicación:", context);
+                        
+                        if (context && context.currentRecord) {
+                            this.state.currentModule = 'Accounts';
+                            this.state.recordId = context.currentRecord.id;
+                            
+                            if (this.state.recordId) {
+                                this.updateStatus('info', `Cuenta detectada: ${this.state.recordId}. Cargando datos...`);
+                                this.processRecord(this.state.recordId);
+                            } else {
+                                this.handleFailure("No se pudo identificar el Record ID en el contexto actual.");
+                            }
+                        } else {
+                            this.handleFailure("No se pudo obtener el contexto de la aplicación.");
+                        }
+                    } catch (error) {
+                        console.error("Error al obtener el contexto:", error);
+                        this.handleFailure("Error al obtener información del contexto.");
+                    }
+                },
+                
+                handlePageLoad(data) {
+                    console.log("Manejando PageLoad con datos:", data);
+                    
+                    let recordId = null;
+                    
+                    if (data && data.EntityId) {
+                        if (Array.isArray(data.EntityId) && data.EntityId.length > 0) {
+                            recordId = data.EntityId[0];
+                        } 
+                        else if (typeof data.EntityId === 'string' && data.EntityId.length > 0) {
+                            recordId = data.EntityId;
+                        }
+                    } 
+                    else if (data && data.EntityInfo && data.EntityInfo.id) {
+                        recordId = data.EntityInfo.id;
+                    }
+                    else if (data && data.id) {
+                        recordId = data.id;
+                    }
+                    
+                    this.state.currentModule = 'Accounts';
+                    
+                    if (recordId && recordId !== this.state.recordId) {
+                        this.updateStatus('info', `Cuenta detectada: ${recordId}. Cargando datos...`);
+                        this.processRecord(recordId);
+                    } else if (!recordId) {
+                        console.warn("No se pudo identificar el Record ID en PageLoad, intentando método alternativo...");
+                        this.getCurrentRecord();
+                    }
+                },
+
+                processRecord(id) {
+                    if (!id) {
+                        this.handleFailure("Record ID inválido.");
+                        return;
+                    }
+                    this.state.recordId = id;
+                    this.dom.reloadBtn.disabled = false;
+                    this.loadAnalytics();
+                    this.loadRecordDetails();
+                },
+
+                addEventListeners() {
+                    this.dom.reloadBtn.addEventListener('click', () => this.handleReload());
+                    this.dom.iframe.onload = () => {
+                        this.updateStatus('success', `Dashboard cargado para: ${this.state.recordId}.`);
+                        this.updateLastUpdated();
+                    };
+                    this.dom.iframe.onerror = () => this.updateStatus('error', 'Error al cargar el dashboard de Analytics.');
+                },
+
+                handleReload() {
+                    if (!this.state.recordId) {
+                        this.updateStatus('error', 'No hay un Record ID para recargar.');
+                        return;
+                    }
+                    this.updateStatus('info', 'Recargando dashboard de Analytics...');
+                    this.loadAnalytics();
+                },
+
+                async loadRecordDetails() {
+                    this.dom.recordDetails.innerHTML = `<div class="status loading">Cargando detalles...</div>`;
+                    try {
+                        const response = await ZOHO.CRM.API.getRecord({
+                            Entity: this.state.currentModule,
+                            RecordID: this.state.recordId
+                        });
+                        console.log("Respuesta de la API:", response);
+                        this.renderRecordDetails(response.data[0]);
+                    } catch (error) {
+                        console.error("Error al cargar detalles del registro:", error);
+                        console.warn("API de Zoho no disponible, mostrando datos de demo.", error);
+                        this.renderDemoDetails();
+                    }
+                },
+
+                renderRecordDetails(record) {
+                    this.dom.recordDetails.innerHTML = `
+                        <div class="record-id-container">
+                            <div class="record-id-label">Record ID</div>
+                            <div class="record-id-value">${this.sanitizeHTML(this.state.recordId)}</div>
+                        </div>
+                    `;
+                },
+                
+                renderDemoDetails() {
+                    this.renderRecordDetails({
+                        id: this.state.recordId,
+                    });
+                    this.updateStatus('info', 'Mostrando datos de demostración.');
+                },
+
+                loadAnalytics() {
+                    if (!this.state.recordId) return;
+                    // NUEVO ENLACE ACTUALIZADO
+                    const url = `https://analytics.zoho.com/open-view/3142066000000051957/5b9e7cbc52e01041e25ed248f175081d?recordId=${this.state.recordId}`;
+                    this.dom.iframe.src = url;
+                },
+                
+                handleFailure(message) {
+                    this.updateStatus('error', message);
+                    this.dom.recordDetails.innerHTML = `<div class="info-group"><div class="value error">${this.sanitizeHTML(message)}</div></div>`;
+                    this.dom.reloadBtn.disabled = true;
+                },
+
+                updateStatus(type, message) {
+                    this.dom.statusMsg.className = `status ${type}`;
+                    this.dom.statusMsg.innerHTML = `${type === 'loading' ? '<div class="spinner"></div>' : ''}<span>${this.sanitizeHTML(message)}</span>`;
+                },
+                
+                updateLastUpdated() {
+                    const now = new Date();
+                    const formattedTime = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    this.dom.lastUpdated.textContent = `Última actualización: ${formattedTime}`;
+                },
+
+                sanitizeHTML(text) {
+                    const temp = document.createElement('div');
+                    temp.textContent = text;
+                    return temp.innerHTML;
+                }
+            };
+            
+            zohoWidget.init();
+        });
+    </script>
+</body>
+</html>
