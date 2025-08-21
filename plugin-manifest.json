@@ -1,0 +1,11 @@
+{
+  "plugin_name": "Detalles de Lead y Analytics",
+  "version": "1.0.0",
+  "service": "CRM",
+  "widgets": [
+    {
+      "name": "server2",
+      "location": "widget.html"
+    }
+  ]
+}
