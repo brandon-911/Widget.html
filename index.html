@@ -3,217 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoho Inventory - Inicio de Sesión</title>
+    <title>Widget de Puertos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
             background-color: #f5f7fa;
-            height: 100vh;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            color: #333;
         }
         
         .container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
         .header {
-            background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .widget {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .widget-header {
+            background: #3498db;
             color: white;
-            padding: 12px 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
         }
         
-        .logo {
-            font-weight: 600;
+        .widget-title {
             font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .search-container {
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-box {
             display: flex;
             align-items: center;
-            gap: 10px;
+            background: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
         }
         
-        .logo-icon {
-            font-size: 20px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+        .search-box input {
             border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+            outline: none;
+            flex: 1;
+            padding: 5px;
             font-size: 14px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
         
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .search-box i {
+            color: #7f8c8d;
+            margin-right: 5px;
         }
         
-        .iframe-container {
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-            background: #fff;
+        .table-container {
+            overflow-x: auto;
         }
         
-        iframe {
+        table {
             width: 100%;
-            height: 100%;
-            border: none;
+            border-collapse: collapse;
         }
         
-        .loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f5f7fa;
-            z-index: 10;
-            flex-direction: column;
-            gap: 20px;
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
         }
         
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(74, 100, 145, 0.2);
-            border-radius: 50%;
-            border-top-color: #4a6491;
-            animation: spin 1s ease-in-out infinite;
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        th:hover {
+            background-color: #eaecee;
+        }
+        
+        tr:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .port-number {
+            font-weight: bold;
+            color: #2980b9;
         }
         
         .status {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
+            display: inline-block;
+            padding: 5px 10px;
             border-radius: 20px;
-            background: #2c3e50;
-            color: white;
-            font-size: 14px;
-            opacity: 0.95;
-            display: none;
-            z-index: 20;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-size: 12px;
+            font-weight: 500;
         }
         
-        .login-panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            z-index: 30;
-            max-width: 450px;
-            width: 90%;
+        .status-open {
+            background: #e8f5e9;
+            color: #2e7d32;
         }
         
-        .login-title {
-            color: #2c3e50;
-            font-size: 22px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+        .status-filtered {
+            background: #ffecb3;
+            color: #f57c00;
         }
         
-        .login-content {
-            color: #4a6491;
-            margin-bottom: 25px;
-            line-height: 1.6;
+        .status-closed {
+            background: #ffcdd2;
+            color: #c62828;
         }
         
-        .login-btn {
-            background: #4a6491;
+        .copy-btn {
+            background: #3498db;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 6px;
+            border-radius: 4px;
+            padding: 6px 12px;
             cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .login-btn:hover {
-            background: #2c3e50;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .info-panel {
-            background: #e8f4fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: left;
-            border-left: 4px solid #2196F3;
-        }
-        
-        .info-panel h3 {
-            color: #0c5460;
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        .copy-btn i {
+            margin-right: 5px;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, opacity 0.3s;
+            transform: translateY(100px);
+            opacity: 0;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            list-style: none;
+        }
+        
+        .pagination li {
+            margin: 0 5px;
+        }
+        
+        .pagination a {
+            display: block;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #3498db;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .pagination a:hover {
+            background: #f5f7fa;
+        }
+        
+        .pagination a.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
         }
         
         @media (max-width: 768px) {
-            .header {
-                padding: 10px 15px;
+            th, td {
+                padding: 10px;
+            }
+            
+            .widget-header {
                 flex-direction: column;
-                gap: 10px;
+                align-items: flex-start;
             }
             
-            .logo {
-                font-size: 16px;
+            .search-container {
+                padding: 10px;
             }
             
-            .btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            
-            .login-panel {
-                padding: 20px;
+            .search-box {
+                max-width: 100%;
             }
         }
     </style>
@@ -221,152 +241,161 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">
-                <span class="logo-icon">📦</span> Zoho Inventory
-            </div>
-            <div class="controls">
-                <button class="btn" onclick="refreshIframe()">
-                    <span>🔄</span> Actualizar
-                </button>
-                <button class="btn" onclick="openInNewTab()">
-                    <span>↗</span> Abrir directamente
-                </button>
-                <button class="btn" onclick="showHelp()">
-                    <span>❓</span> Ayuda
-                </button>
-            </div>
+            <h1>Analizador de Puertos de Embarcación</h1>
+            <p>Visualización y gestión de puertos de Embarque</p>
         </div>
         
-        <div class="iframe-container">
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <div>Cargando Zoho Inventory...</div>
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-title">Lista de Puertos</div>
+                <div class="widget-controls">
+                    <!-- Espacio para controles adicionales -->
+                </div>
             </div>
-            <iframe id="inventoryFrame" src="about:blank" title="Zoho Inventory"></iframe>
             
-            <div class="login-panel" id="loginPanel">
-                <div class="login-title">
-                    <span>🔐</span> Inicio de sesión requerido
-                </div>
-                <div class="login-content">
-                    <p>Para acceder a Zoho Inventory, necesitas iniciar sesión con tu cuenta de Zoho.</p>
-                    <p>Haz clic en el botón de abajo para ir a la página de inicio de sesión.</p>
-                </div>
-                <button class="login-btn" onclick="redirectToLogin()">
-                    <span>→</span> Ir a Iniciar Sesión
-                </button>
-                
-                <div class="info-panel">
-                    <h3><span>💡</span> Información importante</h3>
-                    <p>Después de iniciar sesión, serás redirigido automáticamente a Zoho Inventory. Puede que necesites actualizar esta página después de iniciar sesión.</p>
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Buscar puertos...">
                 </div>
             </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Puerto <i class="fas fa-sort"></i></th>
+                            <th>Nombre Puerto <i class="fas fa-sort"></i></th>
+                            <th>Estado <i class="fas fa-sort"></i></th>
+                            <th>UN/LOCODE <i class="fas fa-sort"></i></th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los datos se cargarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li><a href="#">&laquo;</a></li>
+                    <li><a href="#" class="active">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div class="status" id="status"></div>
     </div>
+    
+    <div class="notification" id="notification">Texto copiado al portapapeles</div>
 
     <script>
-        // URL de inicio de sesión de Zoho Inventory - Actualizada según tu solicitud
-        const LOGIN_URL = "https://accounts.zoho.com/signin?servicename=ZohoInventory&signupurl=https://www.zoho.com/es-mx/inventory/signup/index.html";
-        const INVENTORY_URL = "https://inventory.zoho.com";
-        
-        // Elementos DOM
-        const inventoryFrame = document.getElementById('inventoryFrame');
-        const loadingElement = document.getElementById('loading');
-        const statusElement = document.getElementById('status');
-        const loginPanel = document.getElementById('loginPanel');
-        
-        // Función para cargar Inventory
-        function loadInventory() {
-            loadingElement.style.display = 'flex';
-            loginPanel.style.display = 'none';
+        // Datos de ejemplo para la tabla
+        const portData = [
+            { port: 80, protocol: 'TCP', status: 'Open', service: 'HTTP' },
+            { port: 443, protocol: 'TCP', status: 'Open', service: 'HTTPS' },
+            { port: 22, protocol: 'TCP', status: 'Filtered', service: 'SSH' },
+            { port: 21, protocol: 'TCP', status: 'Open', service: 'FTP' },
+            { port: 25, protocol: 'TCP', status: 'Closed', service: 'SMTP' },
+            { port: 53, protocol: 'UDP', status: 'Open', service: 'DNS' },
+            { port: 110, protocol: 'TCP', status: 'Closed', service: 'POP3' },
+            { port: 143, protocol: 'TCP', status: 'Open', service: 'IMAP' },
+            { port: 3306, protocol: 'TCP', status: 'Filtered', service: 'MySQL' },
+            { port: 3389, protocol: 'TCP', status: 'Open', service: 'RDP' },
+            { port: 27017, protocol: 'TCP', status: 'Closed', service: 'MongoDB' },
+            { port: 5432, protocol: 'TCP', status: 'Open', service: 'PostgreSQL' }
+        ];
+
+        // Función para renderizar la tabla
+        function renderTable(data) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
             
-            // Establecer la fuente del iframe
-            inventoryFrame.src = INVENTORY_URL;
-            
-            // Configurar evento de carga del iframe
-            inventoryFrame.onload = function() {
-                loadingElement.style.display = 'none';
-                showStatus('Zoho Inventory cargado correctamente', 2000);
+            data.forEach(item => {
+                const row = document.createElement('tr');
                 
-                // Verificar si hay contenido de error después de la carga
-                setTimeout(checkForLoginRedirect, 2000);
-            };
-            
-            inventoryFrame.onerror = function() {
-                loadingElement.style.display = 'none';
-                showLoginPanel();
-            };
-        }
-        
-        // Función para verificar si redirige a login
-        function checkForLoginRedirect() {
-            try {
-                const iframeDoc = inventoryFrame.contentDocument || inventoryFrame.contentWindow.document;
-                const bodyContent = iframeDoc.body.innerHTML;
+                // Determinar la clase de estado
+                let statusClass = '';
+                if (item.status === 'Open') statusClass = 'status-open';
+                else if (item.status === 'Filtered') statusClass = 'status-filtered';
+                else if (item.status === 'Closed') statusClass = 'status-closed';
                 
-                // Detectar si estamos en una página de login
-                if (bodyContent.includes("signin") || 
-                    bodyContent.includes("login") || 
-                    bodyContent.includes("iniciar sesión") ||
-                    bodyContent.includes("Zoho Accounts") ||
-                    (iframeDoc.title && iframeDoc.title.includes("Login"))) {
-                    showLoginPanel();
-                }
-            } catch (e) {
-                // Error de acceso cruzado, lo cual es normal
-                console.log("No se puede acceder al contenido del iframe por políticas de seguridad");
-            }
+                row.innerHTML = `
+                    <td class="port-number">${item.port}</td>
+                    <td>${item.protocol}</td>
+                    <td><span class="status ${statusClass}">${item.status}</span></td>
+                    <td>${item.service}</td>
+                    <td>
+                        <button class="copy-btn" data-port="${item.port}" data-protocol="${item.protocol}">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Añadir event listeners a los botones de copiar
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const port = this.getAttribute('data-port');
+                    const protocol = this.getAttribute('data-protocol');
+                    const textToCopy = `${port}/${protocol}`;
+                    
+                    copyToClipboard(textToCopy);
+                    showNotification(`Puerto ${textToCopy} copiado al portapapeles`);
+                });
+            });
         }
         
-        // Función para mostrar panel de login
-        function showLoginPanel() {
-            loginPanel.style.display = 'block';
-            showStatus('Se requiere iniciar sesión en Zoho', 5000);
+        // Función para copiar al portapapeles
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
         }
         
-        // Función para redirigir a login
-        function redirectToLogin() {
-            inventoryFrame.src = LOGIN_URL;
-            loadingElement.style.display = 'flex';
-            loginPanel.style.display = 'none';
-            showStatus('Cargando página de inicio de sesión...', 3000);
-        }
-        
-        // Función para refrescar el iframe
-        function refreshIframe() {
-            showStatus('Actualizando...', 1000);
-            loadInventory();
-        }
-        
-        // Función para abrir en nueva pestaña
-        function openInNewTab() {
-            window.open(INVENTORY_URL, '_blank');
-        }
-        
-        // Función para mostrar ayuda
-        function showHelp() {
-            alert("Para acceder a Zoho Inventory:\n\n1. Haz clic en 'Ir a Iniciar Sesión'\n2. Inicia sesión con tu cuenta de Zoho\n3. Después de iniciar sesión, actualiza esta página\n4. Si tienes problemas, prueba abriendo Zoho Inventory directamente");
-        }
-        
-        // Función para mostrar estado temporal
-        function showStatus(message, duration) {
-            statusElement.textContent = message;
-            statusElement.style.display = 'block';
+        // Función para mostrar notificación
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
             
             setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, duration);
+                notification.classList.remove('show');
+            }, 3000);
         }
         
-        // Inicializar cuando la página cargue
-        window.onload = function() {
-            loadInventory();
+        // Función para buscar en la tabla
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
             
-            // Verificar periódicamente si necesita login
-            setInterval(checkForLoginRedirect, 3000);
-        };
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase();
+                
+                const filteredData = portData.filter(item => {
+                    return (
+                        item.port.toString().includes(searchText) ||
+                        item.protocol.toLowerCase().includes(searchText) ||
+                        item.status.toLowerCase().includes(searchText) ||
+                        item.service.toLowerCase().includes(searchText)
+                    );
+                });
+                
+                renderTable(filteredData);
+            });
+        }
+        
+        // Inicializar la tabla y la búsqueda
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable(portData);
+            setupSearch();
+        });
     </script>
 </body>
 </html>
