@@ -8,13 +8,12 @@
     <style>
         :root {
             --primary: #2c3e50;
-            --secondary: #3498db;
-            --success: #2ecc71;
+            --secondary: #2e86de;
+            --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
             --light: #ecf0f1;
             --dark: #2c3e50;
-            --background: #f8f9fa;
             --text: #333;
             --border: #ddd;
         }
@@ -37,7 +36,7 @@
         .container {
             display: flex;
             flex-direction: column;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             gap: 20px;
         }
@@ -87,86 +86,64 @@
             display: inline-block;
         }
         
+        .status-disconnected {
+            background-color: var(--danger);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
         .widget-content {
             padding: 20px;
         }
         
-        .controls-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .search-container, .filter-container {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .search-input, .filter-select {
+        .iframe-container {
             width: 100%;
-            padding: 12px 15px;
+            height: 600px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 20px;
             border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: var(--dark);
-            cursor: pointer;
+            overflow: hidden;
+            margin-bottom: 20px;
             position: relative;
         }
         
-        th:hover {
-            background-color: #eaecee;
-        }
-        
-        th i {
-            margin-left: 5px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        tr:hover {
-            background-color: #f5f7fa;
-        }
-        
-        .copy-btn {
-            background: var(--secondary);
-            color: white;
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: background 0.3s;
-            font-size: 0.9rem;
         }
         
-        .copy-btn:hover {
-            background: #2980b9;
+        .iframe-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+        
+        .iframe-overlay.hidden {
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .widget-footer {
@@ -178,25 +155,6 @@
             border-top: 1px solid var(--border);
             flex-wrap: wrap;
             gap: 15px;
-        }
-        
-        .pagination {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .pagination button {
-            padding: 8px 12px;
-            background-color: white;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .pagination button.active {
-            background-color: var(--secondary);
-            color: white;
-            border-color: var(--secondary);
         }
         
         .refresh-btn {
@@ -240,94 +198,38 @@
             opacity: 1;
         }
         
-        .instructions {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        .notification.error {
+            background: var(--danger);
         }
         
-        .instructions h2 {
-            color: var(--primary);
-            margin-bottom: 15px;
+        .report-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .instructions-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .instructions-section {
-            margin-bottom: 15px;
-        }
-        
-        .instructions-section h3 {
-            margin-bottom: 10px;
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
-        
-        .instructions-section ul {
-            padding-left: 20px;
-        }
-        
-        .instructions-section li {
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-        
-        .code-block {
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 12px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            overflow-x: auto;
+        .report-info i {
+            color: var(--secondary);
+            font-size: 1.2rem;
         }
         
         @media (max-width: 768px) {
-            .instructions-content {
-                grid-template-columns: 1fr;
-            }
-            
             .widget-footer {
                 justify-content: center;
-            }
-            
-            th, td {
-                padding: 10px;
             }
             
             .widget-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
-        }
-        
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            
+            .iframe-container {
+                height: 400px;
+            }
         }
     </style>
 </head>
@@ -337,88 +239,33 @@
             <div class="widget-header">
                 <h1 class="widget-title"><i class="fas fa-anchor"></i> Dashboard de Puertos - Zoho Analytics</h1>
                 <div class="connection-status">
-                    <span class="status-connected"></span>
-                    Conectado a Zoho Analytics
+                    <span class="status-connected" id="connection-status"></span>
+                    <span id="connection-text">Conectando a Zoho Analytics...</span>
                 </div>
             </div>
             
             <div class="widget-content">
-                <div class="controls-row">
-                    <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Buscar puertos..." id="search-input">
-                    </div>
-                    <div class="filter-container">
-                        <select class="filter-select" id="column-filter">
-                            <option value="all">Todas las columnas</option>
-                            <option value="0">Puerto Destino</option>
-                            <option value="1">Tipo Carga</option>
-                            <option value="2">Naviera</option>
-                            <option value="3">Flete Base</option>
-                        </select>
-                    </div>
+                <div class="report-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Visualizando reporte: <strong>Análisis de Tarifas de Puertos</strong></span>
                 </div>
                 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Puerto Destino <i class="fas fa-sort"></i></th>
-                                <th>Tipo Carga <i class="fas fa-sort"></i></th>
-                                <th>Naviera <i class="fas fa-sort"></i></th>
-                                <th>Flete Base <i class="fas fa-sort"></i></th>
-                                <th>Recargo <i class="fas fa-sort"></i></th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="data-table">
-                            <tr>
-                                <td colspan="6">
-                                    <div class="loading">
-                                        <div class="spinner"></div>
-                                        <p>Cargando datos desde Zoho Analytics...</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="iframe-container">
+                    <div class="iframe-overlay" id="iframe-overlay">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando reporte de Zoho Analytics...</p>
+                    </div>
+                    <iframe id="zoho-report" src="https://analyticsapi.zoho.com/open-view/3142066000000180040/5dcc86a8920502b94d560c4dac58cc4a" frameborder="0"></iframe>
                 </div>
                 
                 <div class="widget-footer">
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <button>...</button>
-                        <button>10</button>
+                    <div class="pagination-info">
+                        Reporte actualizado: <span id="update-time">Hoy a las 11:58</span>
                     </div>
                     
-                    <button class="refresh-btn" id="refresh-btn"><i class="fas fa-sync-alt"></i> Actualizar datos</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="instructions">
-            <h2><i class="fas fa-info-circle"></i> Información de Conexión a Zoho Analytics</h2>
-            <div class="instructions-content">
-                <div class="instructions-section">
-                    <h3>Conexión establecida</h3>
-                    <ul>
-                        <li>Reporte ID: 3142066000000180040</li>
-                        <li>Fuente de datos: Zoho Analytics</li>
-                        <li>Visualización: Tabla de puertos y tarifas</li>
-                        <li>Actualización automática: Cada 30 minutos</li>
-                    </ul>
-                </div>
-                
-                <div class="instructions-section">
-                    <h3>Funcionalidades</h3>
-                    <ul>
-                        <li>Ordenar datos haciendo clic en los encabezados de columna</li>
-                        <li>Buscar en los datos con el campo de búsqueda</li>
-                        <li>Filtrar por columnas específicas</li>
-                        <li>Copiar información de puertos con un clic</li>
-                        <li>Navegar entre páginas de resultados</li>
-                    </ul>
+                    <button class="refresh-btn" id="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Actualizar reporte
+                    </button>
                 </div>
             </div>
         </div>
@@ -426,150 +273,31 @@
 
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
-        <span>Texto copiado al portapapeles</span>
+        <span>Reporte actualizado correctamente</span>
     </div>
 
     <script>
-        // Datos de ejemplo basados en las columnas proporcionadas
-        const mockPortData = [
-            {
-                destino: "Buenaventura",
-                tipoCarga: "Contenedores",
-                naviera: "Maersk",
-                fleteBase: "$1,250",
-                recargo: "$150",
-                pesoNeto: "20T",
-                pesoBruto: "22T",
-                diasTransito: "5",
-                observaciones: "Tarifa especial vigente",
-                tarifaNumero: "T-2023-001",
-                fechaValidez: "2023-12-31",
-                fechaProceso: "2023-05-20",
-                horaProceso: "14:30"
-            },
-            {
-                destino: "Cartagena",
-                tipoCarga: "Granel",
-                naviera: "CMA CGM",
-                fleteBase: "$980",
-                recargo: "$75",
-                pesoNeto: "15T",
-                pesoBruto: "17T",
-                diasTransito: "3",
-                observaciones: "Sin observaciones",
-                tarifaNumero: "T-2023-002",
-                fechaValidez: "2023-11-15",
-                fechaProceso: "2023-05-19",
-                horaProceso: "10:15"
-            },
-            {
-                destino: "Guayaquil",
-                tipoCarga: "Contenedores",
-                naviera: "COSCO",
-                fleteBase: "$1,850",
-                recargo: "$210",
-                pesoNeto: "18T",
-                pesoBruto: "20T",
-                diasTransito: "7",
-                observaciones: "Aplica recargo por combustible",
-                tarifaNumero: "T-2023-003",
-                fechaValidez: "2024-01-20",
-                fechaProceso: "2023-05-21",
-                horaProceso: "09:45"
-            },
-            {
-                destino: "Valparaíso",
-                tipoCarga: "Carga General",
-                naviera: "Hapag-Lloyd",
-                fleteBase: "$2,300",
-                recargo: "$180",
-                pesoNeto: "25T",
-                pesoBruto: "27T",
-                diasTransito: "10",
-                observaciones: "Tarifa promocional",
-                tarifaNumero: "T-2023-004",
-                fechaValidez: "2023-10-10",
-                fechaProceso: "2023-05-18",
-                horaProceso: "16:20"
-            },
-            {
-                destino: "Callao",
-                tipoCarga: "Contenedores",
-                naviera: "MSC",
-                fleteBase: "$1,600",
-                recargo: "$195",
-                pesoNeto: "22T",
-                pesoBruto: "24T",
-                diasTransito: "6",
-                observaciones: "Incluye maniobras",
-                tarifaNumero: "T-2023-005",
-                fechaValidez: "2023-12-15",
-                fechaProceso: "2023-05-22",
-                horaProceso: "11:30"
-            }
-        ];
-
-        // Función para renderizar la tabla con datos
-        function renderTable(data) {
-            const tableBody = document.getElementById('data-table');
-            tableBody.innerHTML = '';
-            
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 30px; color: #666;">
-                            No se encontraron resultados con los criterios de búsqueda
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${item.destino}</td>
-                    <td>${item.tipoCarga}</td>
-                    <td>${item.naviera}</td>
-                    <td>${item.fleteBase}</td>
-                    <td>${item.recargo}</td>
-                    <td>
-                        <button class="copy-btn" data-info="${JSON.stringify(item).replace(/"/g, '&quot;')}">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Añadir event listeners a los botones de copiar
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const info = JSON.parse(this.getAttribute('data-info'));
-                    const textToCopy = `Puerto: ${info.destino}\nTipo Carga: ${info.tipoCarga}\nNaviera: ${info.naviera}\nFlete Base: ${info.fleteBase}\nRecargo: ${info.recargo}\nPeso Neto: ${info.pesoNeto}\nPeso Bruto: ${info.pesoBruto}\nDías Tránsito: ${info.diasTransito}\nObservaciones: ${info.observaciones}\nTarifa Número: ${info.tarifaNumero}\nFecha Validez: ${info.fechaValidez}`;
-                    
-                    copyToClipboard(textToCopy);
-                    showNotification(`Información de ${info.destino} copiada al portapapeles`);
-                });
-            });
-        }
-        
-        // Función para copiar al portapapeles
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-        }
+        // Elementos DOM
+        const notification = document.getElementById('notification');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const updateTime = document.getElementById('update-time');
+        const connectionStatus = document.getElementById('connection-status');
+        const connectionText = document.getElementById('connection-text');
+        const iframeOverlay = document.getElementById('iframe-overlay');
+        const zohoReport = document.getElementById('zoho-report');
         
         // Función para mostrar notificación
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
+        function showNotification(message, isError = false) {
             notification.querySelector('span').textContent = message;
+            notification.classList.remove('error');
+            
+            if (isError) {
+                notification.classList.add('error');
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+            } else {
+                notification.querySelector('i').className = 'fas fa-check-circle';
+            }
+            
             notification.classList.add('show');
             
             setTimeout(() => {
@@ -577,80 +305,92 @@
             }, 3000);
         }
         
-        // Función para buscar en la tabla
-        function setupSearch() {
-            const searchInput = document.getElementById('search-input');
-            const columnFilter = document.getElementById('column-filter');
-            
-            const performSearch = () => {
-                const searchText = searchInput.value.toLowerCase();
-                const columnIndex = columnFilter.value;
-                
-                const filteredData = mockPortData.filter(item => {
-                    if (searchText === '') return true;
-                    
-                    if (columnIndex === 'all') {
-                        // Buscar en todas las columnas
-                        return Object.values(item).some(value => 
-                            value.toString().toLowerCase().includes(searchText)
-                        );
-                    } else {
-                        // Buscar en una columna específica
-                        const columnKeys = ['destino', 'tipoCarga', 'naviera', 'fleteBase'];
-                        const key = columnKeys[parseInt(columnIndex)];
-                        return item[key].toLowerCase().includes(searchText);
-                    }
-                });
-                
-                renderTable(filteredData);
-            };
-            
-            searchInput.addEventListener('input', performSearch);
-            columnFilter.addEventListener('change', performSearch);
+        // Función para actualizar la hora de actualización
+        function updateTimeDisplay() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            updateTime.textContent = `Hoy a las ${timeString}`;
         }
         
-        // Función para simular la actualización de datos desde Zoho Analytics
-        function refreshData() {
-            // Mostrar estado de carga
-            const tableBody = document.getElementById('data-table');
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="6">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <p>Actualizando datos desde Zoho Analytics...</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
+        // Función para verificar el estado del iframe
+        function checkIframeStatus() {
+            // Simulamos una verificación del estado del iframe
+            // En un caso real, podrías verificar si el iframe ha cargado correctamente
+            // o si muestra algún error
             
-            // Simular retraso de red
-            setTimeout(() => {
-                renderTable(mockPortData);
-                showNotification('Datos actualizados correctamente desde Zoho Analytics');
-            }, 1500);
+            // Simulamos un 80% de probabilidad de éxito y 20% de error
+            const isSuccess = Math.random() > 0.2;
+            
+            if (isSuccess) {
+                // Éxito: el iframe se cargó correctamente
+                connectionStatus.className = 'status-connected';
+                connectionText.textContent = 'Conectado a Zoho Analytics';
+                iframeOverlay.classList.add('hidden');
+            } else {
+                // Error: el iframe no se pudo cargar
+                connectionStatus.className = 'status-disconnected';
+                connectionText.textContent = 'Error de conexión';
+                iframeOverlay.innerHTML = `
+                    <div style="text-align: center; color: ${'var(--danger)'};">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <h3>Error al cargar el reporte</h3>
+                        <p>No se pudo conectar a Zoho Analytics. Intenta actualizar la página.</p>
+                    </div>
+                `;
+            }
         }
         
-        // Inicializar la tabla y la búsqueda
+        // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
-            // Renderizar los datos iniciales
-            setTimeout(() => {
-                renderTable(mockPortData);
-            }, 800);
-            
-            // Configurar event listeners para búsqueda y filtros
-            setupSearch();
-            
-            // Configurar botón de actualización
-            document.getElementById('refresh-btn').addEventListener('click', refreshData);
-            
-            // Configurar ordenamiento de columnas
-            document.querySelectorAll('th').forEach(header => {
-                header.addEventListener('click', function() {
-                    // Aquí iría la lógica de ordenamiento
-                    showNotification('Ordenando datos por ' + this.textContent.trim());
-                });
+            // Configurar botón de actualizar
+            refreshBtn.addEventListener('click', function() {
+                // Mostrar overlay de carga
+                iframeOverlay.classList.remove('hidden');
+                iframeOverlay.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <p>Actualizando reporte de Zoho Analytics...</p>
+                `;
+                
+                // Recargar el iframe
+                zohoReport.src = zohoReport.src;
+                
+                // Verificar el estado después de un tiempo
+                setTimeout(checkIframeStatus, 2000);
+                
+                // Actualizar la hora
+                updateTimeDisplay();
+                
+                showNotification('Reporte actualizado correctamente');
             });
+            
+            // Verificar el estado del iframe después de que se cargue
+            zohoReport.addEventListener('load', function() {
+                // Ocultar el overlay después de que el iframe se cargue
+                setTimeout(function() {
+                    iframeOverlay.classList.add('hidden');
+                    connectionStatus.className = 'status-connected';
+                    connectionText.textContent = 'Conectado a Zoho Analytics';
+                }, 1000);
+            });
+            
+            zohoReport.addEventListener('error', function() {
+                // Mostrar error si el iframe no se puede cargar
+                connectionStatus.className = 'status-disconnected';
+                connectionText.textContent = 'Error de conexión';
+                iframeOverlay.innerHTML = `
+                    <div style="text-align: center; color: ${'var(--danger)'};">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <h3>Error al cargar el reporte</h3>
+                        <p>No se pudo conectar a Zoho Analytics. Intenta actualizar la página.</p>
+                    </div>
+                `;
+            });
+            
+            // Inicializar la hora
+            updateTimeDisplay();
+            
+            // Verificar el estado inicial después de un tiempo
+            setTimeout(checkIframeStatus, 3000);
         });
     </script>
 </body>
