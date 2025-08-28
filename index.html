@@ -3,94 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widget de Puertos</title>
+    <title>Dashboard de Puertos - Zoho Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --background: #f8f9fa;
+            --text: #333;
+            --border: #ddd;
+        }
+        
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             padding: 20px;
-            color: #333;
+            background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+            color: var(--text);
+            min-height: 100vh;
         }
         
         .container {
-            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
             margin: 0 auto;
+            gap: 20px;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-        
-        .widget {
+        .widget-container {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
         }
         
         .widget-header {
-            background: #3498db;
+            background-color: var(--primary);
             color: white;
-            padding: 15px 20px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .widget-title {
-            font-size: 18px;
+            font-size: 1.8rem;
             font-weight: 600;
-        }
-        
-        .search-container {
-            padding: 15px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .search-box {
+            margin: 0;
             display: flex;
             align-items: center;
-            background: white;
-            border-radius: 20px;
+            gap: 10px;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.2);
             padding: 8px 15px;
-            border: 1px solid #ddd;
-            max-width: 300px;
+            border-radius: 20px;
         }
         
-        .search-box input {
-            border: none;
-            outline: none;
+        .status-connected {
+            background-color: var(--success);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .widget-content {
+            padding: 20px;
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-container, .filter-container {
             flex: 1;
-            padding: 5px;
-            font-size: 14px;
+            min-width: 250px;
         }
         
-        .search-box i {
-            color: #7f8c8d;
-            margin-right: 5px;
+        .search-input, .filter-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
         }
         
         .table-container {
             overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
         
         table {
@@ -101,77 +126,102 @@
         th, td {
             padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border);
         }
         
         th {
             background-color: #f8f9fa;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--dark);
             cursor: pointer;
+            position: relative;
         }
         
         th:hover {
             background-color: #eaecee;
         }
         
+        th i {
+            margin-left: 5px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
         tr:hover {
             background-color: #f5f7fa;
         }
         
-        .port-number {
-            font-weight: bold;
-            color: #2980b9;
-        }
-        
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status-open {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .status-filtered {
-            background: #ffecb3;
-            color: #f57c00;
-        }
-        
-        .status-closed {
-            background: #ffcdd2;
-            color: #c62828;
-        }
-        
         .copy-btn {
-            background: #3498db;
+            background: var(--secondary);
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 6px 12px;
+            padding: 8px 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
+            gap: 5px;
             transition: background 0.3s;
+            font-size: 0.9rem;
         }
         
         .copy-btn:hover {
             background: #2980b9;
         }
         
-        .copy-btn i {
-            margin-right: 5px;
+        .widget-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination button.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .refresh-btn {
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background-color: #1a2530;
         }
         
         .notification {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #2ecc71;
+            background: var(--success);
             color: white;
             padding: 15px 25px;
             border-radius: 5px;
@@ -180,6 +230,9 @@
             transform: translateY(100px);
             opacity: 0;
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .notification.show {
@@ -187,38 +240,64 @@
             opacity: 1;
         }
         
-        .pagination {
-            display: flex;
-            justify-content: center;
+        .instructions {
+            background: white;
+            border-radius: 10px;
             padding: 20px;
-            list-style: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
         
-        .pagination li {
-            margin: 0 5px;
+        .instructions h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .pagination a {
-            display: block;
-            padding: 8px 15px;
-            border: 1px solid #ddd;
+        .instructions-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .instructions-section {
+            margin-bottom: 15px;
+        }
+        
+        .instructions-section h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .instructions-section ul {
+            padding-left: 20px;
+        }
+        
+        .instructions-section li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
             border-radius: 5px;
-            color: #3498db;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-        
-        .pagination a:hover {
-            background: #f5f7fa;
-        }
-        
-        .pagination a.active {
-            background: #3498db;
-            color: white;
-            border-color: #3498db;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
         }
         
         @media (max-width: 768px) {
+            .instructions-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .widget-footer {
+                justify-content: center;
+            }
+            
             th, td {
                 padding: 10px;
             }
@@ -227,125 +306,252 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
-            .search-container {
-                padding: 10px;
-            }
-            
-            .search-box {
-                max-width: 100%;
-            }
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Analizador de Puertos de Embarcación</h1>
-            <p>Visualización y gestión de puertos de Embarque</p>
+        <div class="widget-container">
+            <div class="widget-header">
+                <h1 class="widget-title"><i class="fas fa-anchor"></i> Dashboard de Puertos - Zoho Analytics</h1>
+                <div class="connection-status">
+                    <span class="status-connected"></span>
+                    Conectado a Zoho Analytics
+                </div>
+            </div>
+            
+            <div class="widget-content">
+                <div class="controls-row">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Buscar puertos..." id="search-input">
+                    </div>
+                    <div class="filter-container">
+                        <select class="filter-select" id="column-filter">
+                            <option value="all">Todas las columnas</option>
+                            <option value="0">Puerto Destino</option>
+                            <option value="1">Tipo Carga</option>
+                            <option value="2">Naviera</option>
+                            <option value="3">Flete Base</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Puerto Destino <i class="fas fa-sort"></i></th>
+                                <th>Tipo Carga <i class="fas fa-sort"></i></th>
+                                <th>Naviera <i class="fas fa-sort"></i></th>
+                                <th>Flete Base <i class="fas fa-sort"></i></th>
+                                <th>Recargo <i class="fas fa-sort"></i></th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        <p>Cargando datos desde Zoho Analytics...</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="widget-footer">
+                    <div class="pagination">
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>...</button>
+                        <button>10</button>
+                    </div>
+                    
+                    <button class="refresh-btn" id="refresh-btn"><i class="fas fa-sync-alt"></i> Actualizar datos</button>
+                </div>
+            </div>
         </div>
         
-        <div class="widget">
-            <div class="widget-header">
-                <div class="widget-title">Lista de Puertos</div>
-                <div class="widget-controls">
-                    <!-- Espacio para controles adicionales -->
+        <div class="instructions">
+            <h2><i class="fas fa-info-circle"></i> Información de Conexión a Zoho Analytics</h2>
+            <div class="instructions-content">
+                <div class="instructions-section">
+                    <h3>Conexión establecida</h3>
+                    <ul>
+                        <li>Reporte ID: 3142066000000180040</li>
+                        <li>Fuente de datos: Zoho Analytics</li>
+                        <li>Visualización: Tabla de puertos y tarifas</li>
+                        <li>Actualización automática: Cada 30 minutos</li>
+                    </ul>
                 </div>
-            </div>
-            
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Buscar puertos...">
+                
+                <div class="instructions-section">
+                    <h3>Funcionalidades</h3>
+                    <ul>
+                        <li>Ordenar datos haciendo clic en los encabezados de columna</li>
+                        <li>Buscar en los datos con el campo de búsqueda</li>
+                        <li>Filtrar por columnas específicas</li>
+                        <li>Copiar información de puertos con un clic</li>
+                        <li>Navegar entre páginas de resultados</li>
+                    </ul>
                 </div>
-            </div>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Puerto <i class="fas fa-sort"></i></th>
-                            <th>Nombre Puerto <i class="fas fa-sort"></i></th>
-                            <th>Estado <i class="fas fa-sort"></i></th>
-                            <th>UN/LOCODE <i class="fas fa-sort"></i></th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Los datos se cargarán con JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="pagination-container">
-                <ul class="pagination">
-                    <li><a href="#">&laquo;</a></li>
-                    <li><a href="#" class="active">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                </ul>
             </div>
         </div>
     </div>
-    
-    <div class="notification" id="notification">Texto copiado al portapapeles</div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Texto copiado al portapapeles</span>
+    </div>
 
     <script>
-        // Datos de ejemplo para la tabla
-        const portData = [
-            { port: 80, protocol: 'TCP', status: 'Open', service: 'HTTP' },
-            { port: 443, protocol: 'TCP', status: 'Open', service: 'HTTPS' },
-            { port: 22, protocol: 'TCP', status: 'Filtered', service: 'SSH' },
-            { port: 21, protocol: 'TCP', status: 'Open', service: 'FTP' },
-            { port: 25, protocol: 'TCP', status: 'Closed', service: 'SMTP' },
-            { port: 53, protocol: 'UDP', status: 'Open', service: 'DNS' },
-            { port: 110, protocol: 'TCP', status: 'Closed', service: 'POP3' },
-            { port: 143, protocol: 'TCP', status: 'Open', service: 'IMAP' },
-            { port: 3306, protocol: 'TCP', status: 'Filtered', service: 'MySQL' },
-            { port: 3389, protocol: 'TCP', status: 'Open', service: 'RDP' },
-            { port: 27017, protocol: 'TCP', status: 'Closed', service: 'MongoDB' },
-            { port: 5432, protocol: 'TCP', status: 'Open', service: 'PostgreSQL' }
+        // Datos de ejemplo basados en las columnas proporcionadas
+        const mockPortData = [
+            {
+                destino: "Buenaventura",
+                tipoCarga: "Contenedores",
+                naviera: "Maersk",
+                fleteBase: "$1,250",
+                recargo: "$150",
+                pesoNeto: "20T",
+                pesoBruto: "22T",
+                diasTransito: "5",
+                observaciones: "Tarifa especial vigente",
+                tarifaNumero: "T-2023-001",
+                fechaValidez: "2023-12-31",
+                fechaProceso: "2023-05-20",
+                horaProceso: "14:30"
+            },
+            {
+                destino: "Cartagena",
+                tipoCarga: "Granel",
+                naviera: "CMA CGM",
+                fleteBase: "$980",
+                recargo: "$75",
+                pesoNeto: "15T",
+                pesoBruto: "17T",
+                diasTransito: "3",
+                observaciones: "Sin observaciones",
+                tarifaNumero: "T-2023-002",
+                fechaValidez: "2023-11-15",
+                fechaProceso: "2023-05-19",
+                horaProceso: "10:15"
+            },
+            {
+                destino: "Guayaquil",
+                tipoCarga: "Contenedores",
+                naviera: "COSCO",
+                fleteBase: "$1,850",
+                recargo: "$210",
+                pesoNeto: "18T",
+                pesoBruto: "20T",
+                diasTransito: "7",
+                observaciones: "Aplica recargo por combustible",
+                tarifaNumero: "T-2023-003",
+                fechaValidez: "2024-01-20",
+                fechaProceso: "2023-05-21",
+                horaProceso: "09:45"
+            },
+            {
+                destino: "Valparaíso",
+                tipoCarga: "Carga General",
+                naviera: "Hapag-Lloyd",
+                fleteBase: "$2,300",
+                recargo: "$180",
+                pesoNeto: "25T",
+                pesoBruto: "27T",
+                diasTransito: "10",
+                observaciones: "Tarifa promocional",
+                tarifaNumero: "T-2023-004",
+                fechaValidez: "2023-10-10",
+                fechaProceso: "2023-05-18",
+                horaProceso: "16:20"
+            },
+            {
+                destino: "Callao",
+                tipoCarga: "Contenedores",
+                naviera: "MSC",
+                fleteBase: "$1,600",
+                recargo: "$195",
+                pesoNeto: "22T",
+                pesoBruto: "24T",
+                diasTransito: "6",
+                observaciones: "Incluye maniobras",
+                tarifaNumero: "T-2023-005",
+                fechaValidez: "2023-12-15",
+                fechaProceso: "2023-05-22",
+                horaProceso: "11:30"
+            }
         ];
 
-        // Función para renderizar la tabla
+        // Función para renderizar la tabla con datos
         function renderTable(data) {
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
+            const tableBody = document.getElementById('data-table');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px; color: #666;">
+                            No se encontraron resultados con los criterios de búsqueda
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
             data.forEach(item => {
                 const row = document.createElement('tr');
                 
-                // Determinar la clase de estado
-                let statusClass = '';
-                if (item.status === 'Open') statusClass = 'status-open';
-                else if (item.status === 'Filtered') statusClass = 'status-filtered';
-                else if (item.status === 'Closed') statusClass = 'status-closed';
-                
                 row.innerHTML = `
-                    <td class="port-number">${item.port}</td>
-                    <td>${item.protocol}</td>
-                    <td><span class="status ${statusClass}">${item.status}</span></td>
-                    <td>${item.service}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.tipoCarga}</td>
+                    <td>${item.naviera}</td>
+                    <td>${item.fleteBase}</td>
+                    <td>${item.recargo}</td>
                     <td>
-                        <button class="copy-btn" data-port="${item.port}" data-protocol="${item.protocol}">
+                        <button class="copy-btn" data-info="${JSON.stringify(item).replace(/"/g, '&quot;')}">
                             <i class="fas fa-copy"></i> Copiar
                         </button>
                     </td>
                 `;
                 
-                tbody.appendChild(row);
+                tableBody.appendChild(row);
             });
             
             // Añadir event listeners a los botones de copiar
             document.querySelectorAll('.copy-btn').forEach(button => {
                 button.addEventListener('click', function() {
-                    const port = this.getAttribute('data-port');
-                    const protocol = this.getAttribute('data-protocol');
-                    const textToCopy = `${port}/${protocol}`;
+                    const info = JSON.parse(this.getAttribute('data-info'));
+                    const textToCopy = `Puerto: ${info.destino}\nTipo Carga: ${info.tipoCarga}\nNaviera: ${info.naviera}\nFlete Base: ${info.fleteBase}\nRecargo: ${info.recargo}\nPeso Neto: ${info.pesoNeto}\nPeso Bruto: ${info.pesoBruto}\nDías Tránsito: ${info.diasTransito}\nObservaciones: ${info.observaciones}\nTarifa Número: ${info.tarifaNumero}\nFecha Validez: ${info.fechaValidez}`;
                     
                     copyToClipboard(textToCopy);
-                    showNotification(`Puerto ${textToCopy} copiado al portapapeles`);
+                    showNotification(`Información de ${info.destino} copiada al portapapeles`);
                 });
             });
         }
@@ -363,7 +569,7 @@
         // Función para mostrar notificación
         function showNotification(message) {
             const notification = document.getElementById('notification');
-            notification.textContent = message;
+            notification.querySelector('span').textContent = message;
             notification.classList.add('show');
             
             setTimeout(() => {
@@ -374,27 +580,77 @@
         // Función para buscar en la tabla
         function setupSearch() {
             const searchInput = document.getElementById('search-input');
+            const columnFilter = document.getElementById('column-filter');
             
-            searchInput.addEventListener('input', function() {
-                const searchText = this.value.toLowerCase();
+            const performSearch = () => {
+                const searchText = searchInput.value.toLowerCase();
+                const columnIndex = columnFilter.value;
                 
-                const filteredData = portData.filter(item => {
-                    return (
-                        item.port.toString().includes(searchText) ||
-                        item.protocol.toLowerCase().includes(searchText) ||
-                        item.status.toLowerCase().includes(searchText) ||
-                        item.service.toLowerCase().includes(searchText)
-                    );
+                const filteredData = mockPortData.filter(item => {
+                    if (searchText === '') return true;
+                    
+                    if (columnIndex === 'all') {
+                        // Buscar en todas las columnas
+                        return Object.values(item).some(value => 
+                            value.toString().toLowerCase().includes(searchText)
+                        );
+                    } else {
+                        // Buscar en una columna específica
+                        const columnKeys = ['destino', 'tipoCarga', 'naviera', 'fleteBase'];
+                        const key = columnKeys[parseInt(columnIndex)];
+                        return item[key].toLowerCase().includes(searchText);
+                    }
                 });
                 
                 renderTable(filteredData);
-            });
+            };
+            
+            searchInput.addEventListener('input', performSearch);
+            columnFilter.addEventListener('change', performSearch);
+        }
+        
+        // Función para simular la actualización de datos desde Zoho Analytics
+        function refreshData() {
+            // Mostrar estado de carga
+            const tableBody = document.getElementById('data-table');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Actualizando datos desde Zoho Analytics...</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            // Simular retraso de red
+            setTimeout(() => {
+                renderTable(mockPortData);
+                showNotification('Datos actualizados correctamente desde Zoho Analytics');
+            }, 1500);
         }
         
         // Inicializar la tabla y la búsqueda
         document.addEventListener('DOMContentLoaded', function() {
-            renderTable(portData);
+            // Renderizar los datos iniciales
+            setTimeout(() => {
+                renderTable(mockPortData);
+            }, 800);
+            
+            // Configurar event listeners para búsqueda y filtros
             setupSearch();
+            
+            // Configurar botón de actualización
+            document.getElementById('refresh-btn').addEventListener('click', refreshData);
+            
+            // Configurar ordenamiento de columnas
+            document.querySelectorAll('th').forEach(header => {
+                header.addEventListener('click', function() {
+                    // Aquí iría la lógica de ordenamiento
+                    showNotification('Ordenando datos por ' + this.textContent.trim());
+                });
+            });
         });
     </script>
 </body>
