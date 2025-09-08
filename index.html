@@ -3,395 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Puertos - Zoho Analytics</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Formulario de Firma - Pintura Berel</title>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #2e86de;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --text: #333;
-            --border: #ddd;
-        }
-        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        
-        .container {
+            background-color: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 20px;
         }
         
-        .widget-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-        }
-        
-        .widget-header {
-            background-color: var(--primary);
+        .header {
+            background: #3498db;
             color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding: 12px 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .widget-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .header h1 {
+            font-size: 1.3rem;
+            font-weight: 500;
         }
         
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
-        
-        .status-connected {
-            background-color: var(--success);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
-        .status-disconnected {
-            background-color: var(--danger);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
-        .widget-content {
-            padding: 20px;
-        }
-        
-        .iframe-container {
+        .viewer-container {
+            flex: 1;
             width: 100%;
-            height: 600px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
         }
         
-        .iframe-container iframe {
+        #form-frame {
             width: 100%;
             height: 100%;
             border: none;
+            display: block;
         }
         
-        .iframe-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            z-index: 10;
+        .footer {
+            background: #3498db;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.8rem;
         }
         
-        .iframe-overlay.hidden {
+        /* Ocultar elementos al hacer clic en el botón de pantalla completa */
+        body.fullscreen .header,
+        body.fullscreen .footer {
             display: none;
         }
         
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .widget-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .refresh-btn {
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .refresh-btn:hover {
-            background-color: #1a2530;
-        }
-        
-        .notification {
+        /* Botón de pantalla completa flotante */
+        .fullscreen-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--success);
+            background: rgba(52, 152, 219, 0.9);
             color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, opacity 0.3s;
-            transform: translateY(100px);
-            opacity: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: all 0.3s;
         }
         
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
+        .fullscreen-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
         }
         
-        .notification.error {
-            background: var(--danger);
+        /* Ocultar botón en modo pantalla completa */
+        body.fullscreen .fullscreen-btn {
+            display: none;
         }
         
-        .report-info {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .report-info i {
-            color: var(--secondary);
-            font-size: 1.2rem;
-        }
-        
+        /* Estilo para dispositivos móviles */
         @media (max-width: 768px) {
-            .widget-footer {
-                justify-content: center;
+            .header {
+                padding: 10px 15px;
             }
             
-            .widget-header {
-                flex-direction: column;
-                align-items: flex-start;
+            .header h1 {
+                font-size: 1.1rem;
             }
             
-            .iframe-container {
-                height: 400px;
+            .fullscreen-btn {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="widget-container">
-            <div class="widget-header">
-                <h1 class="widget-title"><i class="fas fa-anchor"></i> Dashboard de Puertos - Zoho Analytics</h1>
-                <div class="connection-status">
-                    <span class="status-connected" id="connection-status"></span>
-                    <span id="connection-text">Conectando a Zoho Analytics...</span>
-                </div>
-            </div>
-            
-            <div class="widget-content">
-                <div class="report-info">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Visualizando reporte: <strong>Análisis de Tarifas de Puertos</strong></span>
-                </div>
-                
-                <div class="iframe-container">
-                    <div class="iframe-overlay" id="iframe-overlay">
-                        <div class="loading-spinner"></div>
-                        <p>Cargando reporte de Zoho Analytics...</p>
-                    </div>
-                    <iframe id="zoho-report" src="https://analyticsapi.zoho.com/open-view/3142066000000180040/5dcc86a8920502b94d560c4dac58cc4a" frameborder="0"></iframe>
-                </div>
-                
-                <div class="widget-footer">
-                    <div class="pagination-info">
-                        Reporte actualizado: <span id="update-time">Hoy a las 11:58</span>
-                    </div>
-                    
-                    <button class="refresh-btn" id="refresh-btn">
-                        <i class="fas fa-sync-alt"></i> Actualizar reporte
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="header">
+        <h1>Formulario de Firma Digital - Pintura Berel</h1>
     </div>
-
-    <div class="notification" id="notification">
-        <i class="fas fa-check-circle"></i>
-        <span>Reporte actualizado correctamente</span>
+    
+    <div class="viewer-container">
+        <iframe 
+            id="form-frame"
+            frameborder="0" 
+            allowTransparency="true" 
+            scrolling="yes" 
+            src="https://creatorapp.zohopublic.com/pinturaberel/firma/report-embed/Firma_Report/PWmRChRF0PCnJGFe2jH6aVkXny4WdbGEWGnWpfXAE81nEetsvJUWv05TRQyN3QRYRpYffS1vqQxN5N9pMOYrfBzAgYXVA2wwM5ea">
+        </iframe>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 Pintura Berel - Formulario seguro proporcionado por Zoho Creator</p>
+    </div>
+    
+    <div class="fullscreen-btn" onclick="toggleFullscreen()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
     </div>
 
     <script>
-        // Elementos DOM
-        const notification = document.getElementById('notification');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const updateTime = document.getElementById('update-time');
-        const connectionStatus = document.getElementById('connection-status');
-        const connectionText = document.getElementById('connection-text');
-        const iframeOverlay = document.getElementById('iframe-overlay');
-        const zohoReport = document.getElementById('zoho-report');
-        
-        // Función para mostrar notificación
-        function showNotification(message, isError = false) {
-            notification.querySelector('span').textContent = message;
-            notification.classList.remove('error');
-            
-            if (isError) {
-                notification.classList.add('error');
-                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+        // Función para alternar pantalla completa
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+                document.body.classList.add('fullscreen');
             } else {
-                notification.querySelector('i').className = 'fas fa-check-circle';
-            }
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Función para actualizar la hora de actualización
-        function updateTimeDisplay() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            updateTime.textContent = `Hoy a las ${timeString}`;
-        }
-        
-        // Función para verificar el estado del iframe
-        function checkIframeStatus() {
-            // Simulamos una verificación del estado del iframe
-            // En un caso real, podrías verificar si el iframe ha cargado correctamente
-            // o si muestra algún error
-            
-            // Simulamos un 80% de probabilidad de éxito y 20% de error
-            const isSuccess = Math.random() > 0.2;
-            
-            if (isSuccess) {
-                // Éxito: el iframe se cargó correctamente
-                connectionStatus.className = 'status-connected';
-                connectionText.textContent = 'Conectado a Zoho Analytics';
-                iframeOverlay.classList.add('hidden');
-            } else {
-                // Error: el iframe no se pudo cargar
-                connectionStatus.className = 'status-disconnected';
-                connectionText.textContent = 'Error de conexión';
-                iframeOverlay.innerHTML = `
-                    <div style="text-align: center; color: ${'var(--danger)'};">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                        <h3>Error al cargar el reporte</h3>
-                        <p>No se pudo conectar a Zoho Analytics. Intenta actualizar la página.</p>
-                    </div>
-                `;
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                document.body.classList.remove('fullscreen');
             }
         }
         
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar botón de actualizar
-            refreshBtn.addEventListener('click', function() {
-                // Mostrar overlay de carga
-                iframeOverlay.classList.remove('hidden');
-                iframeOverlay.innerHTML = `
-                    <div class="loading-spinner"></div>
-                    <p>Actualizando reporte de Zoho Analytics...</p>
-                `;
-                
-                // Recargar el iframe
-                zohoReport.src = zohoReport.src;
-                
-                // Verificar el estado después de un tiempo
-                setTimeout(checkIframeStatus, 2000);
-                
-                // Actualizar la hora
-                updateTimeDisplay();
-                
-                showNotification('Reporte actualizado correctamente');
-            });
-            
-            // Verificar el estado del iframe después de que se cargue
-            zohoReport.addEventListener('load', function() {
-                // Ocultar el overlay después de que el iframe se cargue
-                setTimeout(function() {
-                    iframeOverlay.classList.add('hidden');
-                    connectionStatus.className = 'status-connected';
-                    connectionText.textContent = 'Conectado a Zoho Analytics';
-                }, 1000);
-            });
-            
-            zohoReport.addEventListener('error', function() {
-                // Mostrar error si el iframe no se puede cargar
-                connectionStatus.className = 'status-disconnected';
-                connectionText.textContent = 'Error de conexión';
-                iframeOverlay.innerHTML = `
-                    <div style="text-align: center; color: ${'var(--danger)'};">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                        <h3>Error al cargar el reporte</h3>
-                        <p>No se pudo conectar a Zoho Analytics. Intenta actualizar la página.</p>
-                    </div>
-                `;
-            });
-            
-            // Inicializar la hora
-            updateTimeDisplay();
-            
-            // Verificar el estado inicial después de un tiempo
-            setTimeout(checkIframeStatus, 3000);
+        // Detectar cambios en el modo de pantalla completa
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                document.body.classList.remove('fullscreen');
+            }
         });
+        
+        // Ajustar altura del iframe dinámicamente
+        function adjustIframeHeight() {
+            const header = document.querySelector('.header');
+            const footer = document.querySelector('.footer');
+            const viewerContainer = document.querySelector('.viewer-container');
+            
+            const headerHeight = header.offsetHeight;
+            const footerHeight = footer.offsetHeight;
+            const windowHeight = window.innerHeight;
+            
+            viewerContainer.style.height = (windowHeight - headerHeight - footerHeight) + 'px';
+        }
+        
+        // Ajustar altura al cargar y al redimensionar
+        window.addEventListener('load', adjustIframeHeight);
+        window.addEventListener('resize', adjustIframeHeight);
     </script>
 </body>
 </html>
